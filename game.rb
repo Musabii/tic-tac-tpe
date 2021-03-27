@@ -4,9 +4,9 @@ require_relative 'tic_tac_toe'
 
 # Game Class
 class Game
-  def initialize(player_one, player_two)
-    @game = TicTacToe.new(player_one, player_two)
-    @player = set_random_players
+  def initialize(player_one, player_two, game = TicTacToe.new(player_one, player_two), turn = Random.new.rand(2))
+    @game = game
+    @player = turn
   end
 
   def play
@@ -19,10 +19,6 @@ class Game
 
     change_turn
     play
-  end
-
-  def set_random_players
-    @player = Random.new.rand(2)
   end
 
   def change_turn

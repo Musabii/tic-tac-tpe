@@ -3,6 +3,7 @@
 # rubocop:disable Metrics/BlockLength
 
 require '../tic_tac_toe'
+require '../game'
 
 describe TicTacToe do
   subject(:tic_game) { described_class.new('Adel', 'Rafael') }
@@ -58,6 +59,29 @@ describe TicTacToe do
     context 'when given a number not in the board' do
       it 'is falsy' do
         expect(tic_game.legal_move?(0)).to be_falsy
+      end
+    end
+  end
+end
+
+describe Game do
+  subject(:test_game) { described_class.new('George', 'Floyd', tic_tac_toe, turn) }
+  let(:turn) { 0 }
+  let(:tic_tac_toe) { instance_double(TicTacToe) }
+  describe '#play' do
+    context 'when the player 0 enters number 6' do
+      before do
+        allow(tic_tac_toe).to receive(:draw_board)
+        allow(test_game).to receive(:ask_move).with(turn).and_return(6)
+        allow(tic_tac_toe).to receive(:legal_move?).with(6).and_return(true)
+        allow(tic_tac_toe).to receive(:over?).with(turn).and_return(nil)
+        allow(test_game).to receive(:change_turn)
+        allow(test_game).to receive(:play)
+      end
+
+      it 'sends make_move once and with correct values' do
+        expect(tic_tac_toe).to receive(:make_move).with(6, turn)
+        test_game.play
       end
     end
   end
