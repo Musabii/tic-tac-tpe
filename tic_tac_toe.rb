@@ -1,92 +1,48 @@
-class Game
-    private
-    def initialize(playerOne, playerTwo)
-        @playerNames = [playerOne, playerTwo]
-        @boxes = [*1..9]
-        @players = ["o", "x"]
-        setRandomPlayers
-        drawBoard
-        askMove(@player)
-    end
+# frozen_string_literal: true
 
-    private
-    def drawBoard
-        puts "\t\t #{@boxes[6]} | #{@boxes[7]} | #{@boxes[8]}"
-        puts "\t\t ---------"
-        puts "\t\t #{@boxes[3]} | #{@boxes[4]} | #{@boxes[5]}"
-        puts "\t\t ---------"
-        puts "\t\t #{@boxes[0]} | #{@boxes[1]} | #{@boxes[2]}\n\n"
-        
-    end
+# class for TicTacToe game
+class TicTacToe
+  attr_reader :players, :player_names
 
-    private
-    def askMove(player)
-        puts "#{@playerNames[player]} please enter a number to play, remember you are playing as #{@players[player]}."
-        move = gets.chomp.to_i
-        makeMove(move, player)
-        
-    end
+  private
 
-    private
-    def checkWinner(player)
-        boxes_to_check = [@boxes[0..2], @boxes[3..5], @boxes[6..8],
-         @boxes.values_at(0, 3, 6), @boxes.values_at(1, 4, 7), 
-         @boxes.values_at(2, 5, 8), @boxes.values_at(0, 4, 8), 
-         @boxes.values_at(2, 4, 6)]
-        if boxes_to_check.any? { |boxes| boxes.all? { |box| box == @players[player] } }
-            anounceGameResult(player)
-            return true  
-        elsif @boxes.all? { |box| box == "o" || box == "x" }
-            anounceGameResult(-1)
-            return true
-        else
-            return false
-        end
-    end
+  def initialize(player_one, player_two)
+    @player_names = [player_one, player_two]
+    @boxes = [*1..9]
+    @players = %w[o x]
+  end
 
-    private
-    def anounceGameResult(player)
-        if player = -1
-            puts "It was a draw!"
-            return
-        end
-        puts "Congrats #{@playerNames[player]}, You Won!"
-    end
+  def full?
+    true if @boxes.all? { |box| @players.include? box }
+  end
 
-    private
-    def makeMove(move, player)
-        if @boxes[move-1] == "x" || @boxes[move-1] == "o"
-            puts "Please enter a number that's not played already!"
-            askMove(player)
-            return
-        end
-        @boxes[move-1] = @players[player]
-        drawBoard
-        if checkWinner(player)
-            return
-        end
-        changeTurn
-        askMove(@player)
-    end
+  public
 
-    private
-    def setRandomPlayers
-        @player = Random.new.rand(2)
-    end
+  def wins?(player)
+    wins = [@boxes[0..2], @boxes[3..5], @boxes[6..8],
+            @boxes.values_at(0, 3, 6), @boxes.values_at(1, 4, 7),
+            @boxes.values_at(2, 5, 8), @boxes.values_at(0, 4, 8),
+            @boxes.values_at(2, 4, 6)]
+    true if wins.any? { |win| win.all? { |box| box == @players[player] } }
+  end
 
-    private
-    def changeTurn
-        @player == 0 ? @player = 1 : @player = 0
-    end
+  def legal_move?(move)
+    true unless @players.include?(@boxes[move - 1]) || !move.between?(1, 9)
+  end
+
+  def draw_board
+    puts "\t\t #{@boxes[6]} | #{@boxes[7]} | #{@boxes[8]}"
+    puts "\t\t ---------"
+    puts "\t\t #{@boxes[3]} | #{@boxes[4]} | #{@boxes[5]}"
+    puts "\t\t ---------"
+    puts "\t\t #{@boxes[0]} | #{@boxes[1]} | #{@boxes[2]}\n\n"
+  end
+
+  def over?(player)
+    true if full? || wins?(player)
+  end
+
+  def make_move(move, player)
+    @boxes[move - 1] = @players[player]
+  end
 end
-
-
-
-
-puts "This is a tic tac toe game for two players!\n"
-puts "Player one please enter your name:"
-playerOne = gets.chomp
-puts "Player two please enter your name:"
-playerTwo = gets.chomp
-
-round = Game.new(playerOne, playerTwo)
