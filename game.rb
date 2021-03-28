@@ -18,11 +18,11 @@ class Game
     return anounce_result(@player) if @game.over?(@player)
 
     change_turn
-    play
   end
 
   def change_turn
     @player = @player.zero? ? 1 : 0
+    play
   end
 
   def ask_move(player)

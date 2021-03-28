@@ -72,15 +72,14 @@ describe Game do
     context 'when the player 0 enters number 6' do
       before do
         allow(tic_tac_toe).to receive(:draw_board)
-        allow(test_game).to receive(:ask_move).with(turn).and_return(6)
+        allow(test_game).to receive(:ask_move).and_return(6)
         allow(tic_tac_toe).to receive(:legal_move?).with(6).and_return(true)
-        allow(tic_tac_toe).to receive(:over?).with(turn).and_return(nil)
+        allow(tic_tac_toe).to receive(:over?).with(turn).and_return(false)
         allow(test_game).to receive(:change_turn)
-        allow(test_game).to receive(:play)
       end
 
       it 'sends make_move once and with correct values' do
-        expect(tic_tac_toe).to receive(:make_move).with(6, turn)
+        expect(tic_tac_toe).to receive(:make_move).with(6, 0)
         test_game.play
       end
     end
